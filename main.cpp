@@ -1,5 +1,5 @@
 #include "http_requester.h"
-#include "tinyxml2.h"
+#include "Dependencies\TinyXML-2\tinyxml2.h"
 
 #include <iostream>
 #include <fstream>
