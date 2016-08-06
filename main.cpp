@@ -1,26 +1,10 @@
-#include "http_requester.h"
-#include "Dependencies\TinyXML-2\tinyxml2.h"
+#include "personalassistant.h"
+#include <QtWidgets/QApplication>
 
-#include <iostream>
-#include <fstream>
-
-
-int main(void)
+int main(int argc, char *argv[])
 {
-
-	HttpRequester httpRequester;
-	httpRequester.newRequest("https://www.reddit.com/r/anime/new.xml");
-
-	std::string content = httpRequester.getContentData();
-
-	tinyxml2::XMLDocument doc;
-	doc.Parse(content.c_str());
-
-	std::string text = doc.FirstChildElement("entry")->GetText();
-
-	int t = 5;
-	std::cin >> t;
-
-
-	return 0;
+	QApplication a(argc, argv);
+	PersonalAssistant w;
+	w.show();
+	return a.exec();
 }
