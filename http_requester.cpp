@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <type_traits>
 
 HttpRequester::HttpRequester() : HttpRequester("-", true)
 {}
@@ -45,6 +46,7 @@ HttpRequester::HttpRequester(const char* cookieFile, bool redirect) : _easyHandl
 		// Cookies: read from file?
 		// Cookies: set cookie?
 	}
+	
 }
 
 HttpRequester::~HttpRequester()
@@ -112,6 +114,8 @@ void HttpRequester::newRequest(const char *url)
 {
 	this->_setUrl(url);
 
+	this->_contentData.clear();
+
 	/* Perform the request, _result will get the return code */
 	auto result = curl_easy_perform(this->_easyHandle);
 
@@ -127,6 +131,15 @@ void HttpRequester::newRequest(const char *url)
 
 	this->_checkForRedirect();
 
+}
+
+void HttpRequester::setWriteCallback(void* userdata, size_t(*callback)(char*, size_t, size_t, void*))
+{
+	// Write Callback data
+	curl_easy_setopt(this->_easyHandle, CURLOPT_WRITEDATA, userdata);
+
+	// Write Callback */
+	curl_easy_setopt(this->_easyHandle, CURLOPT_WRITEFUNCTION, callback);
 }
 
 void HttpRequester::_parseHeader()

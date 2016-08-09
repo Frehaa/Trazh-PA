@@ -17,6 +17,8 @@ public:
 
 	void printCookies();
 	void newRequest(const char* url);
+	//	Allows you to create your own callback for curl to stream data to
+	void setWriteCallback(void *userdata, size_t(*callback)(char*, size_t, size_t, void*));
 	std::string getContentData();
 
 private:
