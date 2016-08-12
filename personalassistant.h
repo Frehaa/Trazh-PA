@@ -1,10 +1,10 @@
 #ifndef PERSONALASSISTANT_H
 #define PERSONALASSISTANT_H
 
-#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QDialog>
 #include "ui_personalassistant.h"
 
-class PersonalAssistant : public QMainWindow
+class PersonalAssistant : public QDialog
 {
 	Q_OBJECT
 

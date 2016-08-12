@@ -1,7 +1,7 @@
 #include "personalassistant.h"
 
 PersonalAssistant::PersonalAssistant(QWidget *parent)
-	: QMainWindow(parent)
+	: QDialog(parent)
 {
 	ui.setupUi(this);
 }
