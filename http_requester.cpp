@@ -4,16 +4,7 @@
 #include <iostream>
 #include <type_traits>
 
-HttpRequester::HttpRequester() : HttpRequester("-", true)
-{}
-
-HttpRequester::HttpRequester(bool redirect) : HttpRequester("-", true)
-{}
-
-HttpRequester::HttpRequester(const char *cookieFile) : HttpRequester(cookieFile, true)
-{}
-
-HttpRequester::HttpRequester(const char* cookieFile, bool redirect) : _easyHandle(curl_easy_init()), _headerData(""), _contentData(""), _followRedirect(redirect), _redirectCount(0)
+HttpRequester::HttpRequester() : _easyHandle(curl_easy_init()), _headerData(""), _contentData("")
 {
 	HttpRequester::_curlGlobalInit();
 
@@ -73,12 +64,14 @@ void HttpRequester::_setUrl(const char* url)
 	this->_checkResult(result, __func__);
 }
 
-void HttpRequester::_checkResult(CURLcode result, const char* function)
+bool HttpRequester::_checkResult(CURLcode result, const char* function)
 {
 	if (result != CURLE_OK) {
 		fprintf(stderr, "Curl error: %s\n%s",
 			curl_easy_strerror(result), function);
+		return false;
 	}
+	return true;
 }
 
 size_t HttpRequester::_write_callback(char *buffer, size_t size, size_t nitems, void *userdata)
@@ -103,37 +96,19 @@ size_t HttpRequester::_header_callback(char *buffer, size_t size, size_t nitems,
 	return realSize;
 }
 
-void HttpRequester::printCookies()
-{
-	curl_slist *cookies;
-
-	auto result = curl_easy_getinfo(this->_easyHandle, CURLINFO_COOKIELIST, &cookies);
-	this->_checkResult(result, "printCookies");
-
-	curl_slist_free_all(cookies);
-}
-
 void HttpRequester::newRequest(const char *url)
 {
 	this->_setUrl(url);
 
-	this->_contentData.clear();
+	this->clear();
 
-	/* Perform the request, _result will get the return code */
+	/* Perform the request, result will get the return code */
 	auto result = curl_easy_perform(this->_easyHandle);
 
-	/* Check for errors */
-	if (result != CURLE_OK) {
-		fprintf(stderr, "Curl error: %s\n",
-			curl_easy_strerror(result));
-
+	if (!this->_checkResult(result, __func__))
 		return;
-	}
 	
 	this->_parseHeader();
-
-	this->_checkForRedirect();
-
 }
 
 void HttpRequester::setWriteCallback(void* userdata, size_t(*callback)(char*, size_t, size_t, void*))
@@ -179,17 +154,29 @@ void HttpRequester::_parseHeader()
 	this->_headerData.shrink_to_fit();
 }
 
-void HttpRequester::_checkForRedirect()
-{
-	// If we didn't get any content data, the redirect flag has been set, we were supplied with and Location value in the header, and we haven't already been redirected once, we redirect and perform this again
-	if (this->_contentData.length() == 0 && this->_followRedirect && this->_headerMap.find("Location") != this->_headerMap.end() && this->_redirectCount < 1)
-	{
-		this->_redirectCount++;
-		this->newRequest(this->_headerMap["Location"].c_str());
-	}
-}
-
 std::string HttpRequester::getContentData()
 {
 	return this->_contentData;
+}
+
+void HttpRequester::clear()
+{
+	this->_contentData.clear();
+	this->_headerMap.clear();
+	this->_httpCode.clear();
+}
+
+void HttpRequester::shrink_to_fit()
+{
+	this->_contentData.shrink_to_fit();
+}
+
+std::string HttpRequester::getHttpCode()
+{
+	return this->_httpCode;
+}
+
+std::unordered_map<std::string, std::string> HttpRequester::getHeaderMap()
+{
+	return this->_headerMap;
 }
