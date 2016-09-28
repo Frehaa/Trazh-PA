@@ -18,30 +18,33 @@ HttpRequester::HttpRequester(const char* cookieFile, bool redirect) : _easyHandl
 	HttpRequester::_curlGlobalInit();
 
 	if (this->_easyHandle) {
-		/* Write lots of usefull shit (DEBUGGING) */
-		curl_easy_setopt(this->_easyHandle, CURLOPT_VERBOSE, 1L);
+		if (debugging)
+		{
+			/* Makes curl write lots of usefull stuff */
+			curl_easy_setopt(this->_easyHandle, CURLOPT_VERBOSE, 1L);
+		}
+		
 
 		/* Setting default options */
 
 		// Follow redirections (doing this automaticly fucks our header map)
-		//this->_result = curl_easy_setopt(this->_easyHandle, CURLOPT_FOLLOWLOCATION, 1L);
-		//this->_checkResult();
+		//curl_easy_setopt(this->_easyHandle, CURLOPT_FOLLOWLOCATION, 1L);
 
-		// Header Callback data
+		// Setting header Callback data to this class 
 		curl_easy_setopt(this->_easyHandle, CURLOPT_HEADERDATA, static_cast<void*>(this));
 
-		// Header Callback
+		// Setting the header Callback
 		curl_easy_setopt(this->_easyHandle, CURLOPT_HEADERFUNCTION, HttpRequester::_header_callback);
 
-		// Write Callback data
+		// Setting the write Callback data to this class 
 		curl_easy_setopt(this->_easyHandle, CURLOPT_WRITEDATA, static_cast<void*>(this));
 
-		// Write Callback */
+		// Setting the write Callback */
 		curl_easy_setopt(this->_easyHandle, CURLOPT_WRITEFUNCTION, HttpRequester::_write_callback);
 
 		// Cookies: Write to file
-		auto result = curl_easy_setopt(this->_easyHandle, CURLOPT_COOKIEJAR, cookieFile);
-		this->_checkResult(result, "CURLOPT_COOKIEJAR");
+		//auto result = curl_easy_setopt(this->_easyHandle, CURLOPT_COOKIEJAR, cookieFile);
+		//this->_checkResult(result, "CURLOPT_COOKIEJAR");
 
 		// Cookies: read from file?
 		// Cookies: set cookie?
@@ -67,14 +70,14 @@ void HttpRequester::_curlGlobalInit()
 void HttpRequester::_setUrl(const char* url)
 {
 	auto result = curl_easy_setopt(this->_easyHandle, CURLOPT_URL, url);
-	this->_checkResult(result, "setUrl");
+	this->_checkResult(result, __func__);
 }
 
 void HttpRequester::_checkResult(CURLcode result, const char* function)
 {
 	if (result != CURLE_OK) {
-		fprintf(stderr, "Curl error: %s\n",
-			curl_easy_strerror(result));
+		fprintf(stderr, "Curl error: %s\n%s",
+			curl_easy_strerror(result), function);
 	}
 }
 
@@ -88,6 +91,7 @@ size_t HttpRequester::_write_callback(char *buffer, size_t size, size_t nitems, 
 
 	return realSize;
 }
+
 size_t HttpRequester::_header_callback(char *buffer, size_t size, size_t nitems, void *userdata)
 {
 	size_t realSize = size*nitems;
@@ -108,7 +112,6 @@ void HttpRequester::printCookies()
 
 	curl_slist_free_all(cookies);
 }
-
 
 void HttpRequester::newRequest(const char *url)
 {
@@ -145,9 +148,7 @@ void HttpRequester::setWriteCallback(void* userdata, size_t(*callback)(char*, si
 void HttpRequester::_parseHeader()
 {
 	if (this->_headerData.length() == 0)
-	{
 		return;
-	}
 
 	//	Split the header data up with "\r\n" as the delimiter 
 	std::string::size_type next = this->_headerData.find("\r\n", 0);
@@ -156,7 +157,7 @@ void HttpRequester::_parseHeader()
 	// First we seperate the return code
 	this->_httpCode = this->_headerData.substr(last, next - last);
 
-	//	Next we iterate over the remaining key value pairs of the header and add them to out _headerMap
+	//	Next we iterate over the remaining key value pairs of the header, split them up by the ":" delimiter, and add them to out _headerMap
 	last = next + 2;
 	next = this->_headerData.find("\r\n", last);
 	for (; next != last; next = this->_headerData.find("\r\n", last))
