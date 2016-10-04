@@ -16,7 +16,7 @@ public:
 	~HttpRequester();
 
 	//	Gets the content of a web page given a valid url
-	void newRequest(const char* url);
+	bool newRequest(const char* url);
 
 	//	Allows you to create your own callback for curl to stream body data to (header data is kept in this class)
 	//	The callback has to have the parameters char* for the actual data, size_t to indicate the stream size, 

@@ -96,7 +96,7 @@ size_t HttpRequester::_header_callback(char *buffer, size_t size, size_t nitems,
 	return realSize;
 }
 
-void HttpRequester::newRequest(const char *url)
+bool HttpRequester::newRequest(const char *url)
 {
 	this->_setUrl(url);
 
@@ -106,9 +106,11 @@ void HttpRequester::newRequest(const char *url)
 	auto result = curl_easy_perform(this->_easyHandle);
 
 	if (!this->_checkResult(result, __func__))
-		return;
+		return false;
 	
 	this->_parseHeader();
+
+	return true;
 }
 
 void HttpRequester::setWriteCallback(void* userdata, size_t(*callback)(char*, size_t, size_t, void*))
