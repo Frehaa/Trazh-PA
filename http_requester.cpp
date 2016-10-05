@@ -21,6 +21,12 @@ HttpRequester::HttpRequester() : _easyHandle(curl_easy_init()), _headerData(""),
 		// Follow redirections (doing this automaticly fucks our header map)
 		//curl_easy_setopt(this->_easyHandle, CURLOPT_FOLLOWLOCATION, 1L);
 
+		//	Setting default protocol for schemeless URLs to https
+		curl_easy_setopt(this->_easyHandle, CURLOPT_DEFAULT_PROTOCOL, "https");
+
+		//	Setting limits of allowed protocols to http and https 
+		curl_easy_setopt(this->_easyHandle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+
 		// Setting header Callback data to this class 
 		curl_easy_setopt(this->_easyHandle, CURLOPT_HEADERDATA, static_cast<void*>(this));
 
