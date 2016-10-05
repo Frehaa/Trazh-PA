@@ -1,4 +1,4 @@
-#define RUN_RECURSIVE_TESTS true
+#include "global_defines.h"
 #if RUN_RECURSIVE_TESTS
 	//	Handle all the testing in test_main.cpp
 	#include "Tests/test_main.h"
