@@ -22,6 +22,10 @@ public:
 
 	//	Set a new alert which continuously requests new data and emits a signal if any new data with matching search words is found
 	void newAlert();
+	//	Adds a search word to searchWords set
+	void addSearchWord(QString word);
+	//	Getter for searchWords
+	QSet<QString> getSearchWords();
 
 signals:
 	//	Signal emitted when new items have been found

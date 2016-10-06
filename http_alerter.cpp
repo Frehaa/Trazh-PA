@@ -196,3 +196,12 @@ size_t HttpAlerter::_requestCallback(char *buffer, size_t size, size_t itemCount
 	return realSize;
 }
 
+void HttpAlerter::addSearchWord(QString word)
+{
+	this->searchWords.insert(word);
+}
+
+QSet<QString> HttpAlerter::getSearchWords()
+{
+	return this->searchWords;
+}
