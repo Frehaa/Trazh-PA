@@ -5,14 +5,17 @@
 
 HttpAlerter::HttpAlerter(QObject *parent) : requester(), doc(), requestData("")
 {
+	//	Watcher used for calling _processRequest once _newRequest has finished when called from _createAsyncRequest
 	this->watcher = new QFutureWatcher<void>(this);
 	QObject::connect(watcher, SIGNAL(finished()), this, SLOT(_processRequest()));
 
+	//	Overwriting HttpRequesters writeCallback which handles how the streamed data is handled
 	this->requester.setWriteCallback(&requestData, HttpAlerter::_requestCallback);
 
+	//	Temporary solution to adding search words
 	this->_getSearchWords();
 }
-
+ 
 HttpAlerter::~HttpAlerter()
 {}
 
@@ -20,6 +23,7 @@ void HttpAlerter::newAlert()
 {
 	this->_createAsyncRequest();
 
+	//	Starts a timer which repeatedly calls _createAsyncRequest
 	QTimer *timer = new QTimer(this);
 	QObject::connect(timer, SIGNAL(timeout()), this, SLOT(_createAsyncRequest()));
 	timer->start(10000);
@@ -42,7 +46,7 @@ void HttpAlerter::_processRequest()
 	auto items = this->_xmlFindItems();
 	if (items.length() == 0)
 	{
-		qDebug() << "No items. Stopping _proccesStuff()";
+		qDebug() << "No items. Stopping "<< __func__;
 		return;
 	}
 
