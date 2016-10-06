@@ -33,7 +33,7 @@ private:
 	QSet<QString> guidList;
 	QSet<QString> searchWords;
 
-	void _newRequest(int i);
+	void _newRequest();
 	//	Temp function for specificly warframe xml. TO DO: Replace with a more generic version
 	QDomNodeList _xmlFindItems();
 	void _filterRepeats(QDomNodeList list);

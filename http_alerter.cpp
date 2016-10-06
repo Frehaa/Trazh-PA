@@ -29,7 +29,7 @@ void HttpAlerter::_createAsyncRequest()
 {
 	this->requestData.clear();
 
-	QFuture<void> future = QtConcurrent::run(this, &HttpAlerter::_newRequest, 1);
+	QFuture<void> future = QtConcurrent::run(this, &HttpAlerter::_newRequest);
 
 	this->watcher->setFuture(future);
 
@@ -63,7 +63,7 @@ void HttpAlerter::_processRequest()
 	emit mySignal(items);
 }
 
-void HttpAlerter::_newRequest(int i)
+void HttpAlerter::_newRequest()
 {
 	this->requester.newRequest("http://content.warframe.com/dynamic/rss.php");
 }
