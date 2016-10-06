@@ -8,8 +8,11 @@
 
 #include <vector>
 
+class TestHttpAlerter;
+
 class HttpAlerter : public QObject
 {
+	friend TestHttpAlerter;
 	Q_OBJECT
 
 public:
