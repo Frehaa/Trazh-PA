@@ -4,14 +4,15 @@
 	#include "Tests/test_main.h"
 #else
 
-#include "personalassistant.h"
+//#include "personalassistant.h"
+#include "dialog_window.h"
 #include <QtWidgets/QApplication>
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
-	PersonalAssistant w;
+	DialogWindow w;
 	w.show();
 
 	return a.exec();
