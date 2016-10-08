@@ -1,9 +1,8 @@
 #include "personalassistant.h"
 
 PersonalAssistant::PersonalAssistant(QWidget *parent)
-	: QDialog(parent)
+	: QObject(parent)
 {
-	ui.setupUi(this);
 }
 
 PersonalAssistant::~PersonalAssistant()
