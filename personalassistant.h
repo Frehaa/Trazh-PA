@@ -1,14 +1,14 @@
 #ifndef PERSONALASSISTANT_H
 #define PERSONALASSISTANT_H
 
-#include <QtWidgets/QDialog>
+#include <QObject>
 
 class PersonalAssistant : public QObject
 {
 	Q_OBJECT
 
 public:
-	PersonalAssistant(QWidget *parent = 0);
+	PersonalAssistant(QObject *parent = 0);
 	~PersonalAssistant();
 };
 

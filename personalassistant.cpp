@@ -1,6 +1,6 @@
 #include "personalassistant.h"
 
-PersonalAssistant::PersonalAssistant(QWidget *parent)
+PersonalAssistant::PersonalAssistant(QObject *parent)
 	: QObject(parent)
 {
 }
