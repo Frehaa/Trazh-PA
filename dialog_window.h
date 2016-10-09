@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QtWidgets/QDialog>
+#include "ui_dialog_window.h"
 
 class DialogWindow : public QDialog
 {
@@ -9,7 +10,8 @@ class DialogWindow : public QDialog
 public:
 	DialogWindow(QWidget *parent = 0);
 	~DialogWindow();
-
+	void addItem(QString desc, QString tooltip, QString timer);
 private:
-	int i;
+	Ui::DialogWindow ui;
+	unsigned rowCount;
 };
