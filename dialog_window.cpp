@@ -8,9 +8,15 @@ DialogWindow::DialogWindow(QWidget *parent)
 	ui.headerLabel->setText("WARFRAME ALERTS");
 
 	
-	addItem("Testin", "Hey", "12323 o'clock");
-	addItem("Hey", "Hello", "It'll go");
-	addItem("And", "All", "tha' jazz");
+	//addItem("Testin", "Hey", "12323 o'clock");
+	//addItem("Hey", "Hello", "It'll go");
+	//addItem("And", "All", "tha' jazz");
+
+	auto label = new QLabel(ui.itemList);
+	label->setText("I'm so good");
+
+	addItem(label);
+
 	this->show();
 }
 DialogWindow::~DialogWindow()
@@ -18,7 +24,6 @@ DialogWindow::~DialogWindow()
 
 void DialogWindow::addItem(QString desc, QString tooltip, QString timer)
 {
-	
 	QFont font1;
 	font1.setFamily(QStringLiteral("Verdana"));
 
@@ -33,7 +38,7 @@ void DialogWindow::addItem(QString desc, QString tooltip, QString timer)
 	descriptionLabel->setWordWrap(false);
 	descriptionLabel->setIndent(5);
 
-	ui.formLayout->setWidget(rowCount, QFormLayout::LabelRole, descriptionLabel);
+	//ui.itemList->setWidget(rowCount, QFormLayout::LabelRole, descriptionLabel);
 
 	QFont font2;
 	font2.setFamily(QStringLiteral("Verdana"));
@@ -48,8 +53,13 @@ void DialogWindow::addItem(QString desc, QString tooltip, QString timer)
 	timeLabel->setWordWrap(false);
 	timeLabel->setIndent(5);
 
-	ui.formLayout->setWidget(rowCount, QFormLayout::FieldRole, timeLabel);
+	//ui.itemListLayout->setWidget(rowCount, QFormLayout::FieldRole, timeLabel);
 
 	++rowCount;
+}
+
+void DialogWindow::addItem(QWidget* item)
+{
+	ui.itemListLayout->insertWidget(rowCount++, item);
 }
 

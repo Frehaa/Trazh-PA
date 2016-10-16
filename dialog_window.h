@@ -11,6 +11,8 @@ public:
 	DialogWindow(QWidget *parent = 0);
 	~DialogWindow();
 	void addItem(QString desc, QString tooltip, QString timer);
+	void addItem(QWidget* item);
+
 private:
 	Ui::DialogWindow ui;
 	unsigned rowCount;
